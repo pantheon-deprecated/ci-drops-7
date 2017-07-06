@@ -83,7 +83,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $site = getenv('TERMINUS_SITE');
         $env = getenv('TERMINUS_ENV');
 
-        passthru("terminus --yes --site=$site --env=$env site wipe");
+        passthru("terminus --yes {$site}.{$env} site:wipe");
     }
 
     /**
@@ -93,7 +93,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $site = getenv('TERMINUS_SITE');
         $env = getenv('TERMINUS_ENV');
-        passthru("terminus --yes --site=$site --env=$env drush '--yes site-install standard --site-name=\"$arg1\" --account-name=admin'");
+        passthru("terminus --yes drush {$site}.{$env} -- site-install standard --site-name=\"$arg1\" --account-name=admin --yes");
     }
 
     /**
@@ -103,7 +103,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $return = '';
         $output = array();
-        exec('terminus drush "' . $arg1 . '"', $output, $return);
+        exec("terminus  --yes drush {$site}.{$env} -- $arg1", $output, $return);
         // echo $return;
         // print_r($output);
 
@@ -117,7 +117,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $site = getenv('TERMINUS_SITE');
         $env = getenv('TERMINUS_ENV');
 
-        passthru("terminus --yes --site=$site --env=$env site code commit --message='$arg1'");
+        passthru("terminus --yes env:commit {$site}.{$env} --message='$arg1'");
     }
 
     /**
@@ -127,7 +127,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $return = '';
         $output = array();
-        exec("terminus drush 'config-export -y'", $output, $return);
+        exec("terminus --yes drush {$site}.{$env} -- config-export -y", $output, $return);
     }
 
     /**
