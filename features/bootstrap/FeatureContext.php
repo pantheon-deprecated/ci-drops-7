@@ -87,7 +87,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
       }
       // Ugh. If there is no http-equiv refresh, extract the URI from the Javascript.
       $content = $this->getSession()->getPage()->getContent();
-      if (preg_match('#jQuery\.extend.*"uri":"([^"]*)#', $t, $matches)) {
+      if (preg_match('#jQuery\.extend.*"uri":"([^"]*)#', $content, $matches)) {
         $url = json_decode('"' . $matches[1] . '"');
         return $url;
       }
