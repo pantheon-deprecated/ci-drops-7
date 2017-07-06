@@ -68,18 +68,30 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      * https://www.drupal.org/node/2011390
      */
     public function iFollowMetaRefresh() {
-      $followedOne = false;
-      while ($refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"]')) {
-        $content = $refresh->getAttribute('content');
-        $url = str_replace('0; URL=', '', $content);
+      if ($url = $this->getRefreshURL()) {
+        print "redirecting to $url\n";
         $this->getSession()->visit($url);
-        $followedOne = true;
       }
-      if (!$followedOne) {
+      else {
         $content = $this->getSession()->getPage()->getContent();
-        print "No refresh attribute found!\n";
+        print "No refresh url found!\n";
         print $content;
       }
+    }
+
+    protected function getRefreshURL() {
+      if ($refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"]')) {
+        $content = $refresh->getAttribute('content');
+        $url = str_replace('0; URL=', '', $content);
+        return $url;
+      }
+      // Ugh. If there is no http-equiv refresh, extract the URI from the Javascript.
+      $content = $this->getSession()->getPage()->getContent();
+      if (preg_match('#jQuery\.extend.*"uri":"([^"]*)#', $t, $matches)) {
+        $url = json_decode('"' . $matches[1] . '"');
+        return $url;
+      }
+      return false;
     }
 
     /**
