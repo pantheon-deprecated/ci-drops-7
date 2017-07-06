@@ -68,10 +68,17 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      * https://www.drupal.org/node/2011390
      */
     public function iFollowMetaRefresh() {
+      $followedOne = false;
       while ($refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"]')) {
         $content = $refresh->getAttribute('content');
         $url = str_replace('0; URL=', '', $content);
         $this->getSession()->visit($url);
+        $followedOne = true;
+      }
+      if (!$followedOne) {
+        $content = $refresh->getAttribute('content');
+        print "No refresh attribute found!\n";
+        print $content;
       }
     }
 

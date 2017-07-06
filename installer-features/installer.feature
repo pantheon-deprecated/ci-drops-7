@@ -22,6 +22,7 @@ Feature: Installer
 
   Scenario: Configure site
     Given I am on "/install.php?profile=pantheon&locale=en"
+    Then print last response
     And I enter "CI Drops-7" for "edit-site-name"
     And I enter "john.doe@example.com" for "edit-site-mail"
     And I enter "admin" for "edit-account-name"
