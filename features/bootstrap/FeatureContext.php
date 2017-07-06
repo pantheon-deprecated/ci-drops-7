@@ -76,7 +76,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $followedOne = true;
       }
       if (!$followedOne) {
-        $content = $refresh->getAttribute('content');
+        $content = $this->getSession()->getPage()->getContent();
         print "No refresh attribute found!\n";
         print $content;
       }
