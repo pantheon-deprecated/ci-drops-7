@@ -5,6 +5,6 @@ Feature: Installer
 
   Scenario: Installer is ready
     Given I have wiped the site
-    And I have reinstalled "{site-name} [{env}]"
+    And I have reinstalled "CI Drops-7 [{site-name}.{env}]"
     And I visit "/"
     Then I should see "Welcome to CI Drops-7"

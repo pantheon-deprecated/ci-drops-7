@@ -8,7 +8,7 @@ Feature: Update database
     Given I am logged in as a user with the "administrator" role
     And I am on "/update.php"
     Then I should see "Drupal database update"
-    When I follow "Continue"
+    When I press "Continue"
     Then I should see "No pending updates."
 
   # Install xmlsitemap 7.x-2.2.  This module already has an update
@@ -40,7 +40,7 @@ Feature: Update database
     Then I should see "Update was completed successfully"
     When I follow "Run database updates"
     Then I should see "Drupal database update"
-    When I follow "Continue"
+    When I press "Continue"
     Then I should see "Increase the length of the ctools_object_cache.obj column"
     When I follow "Apply pending updates"
     And I wait for the progress bar to finish
