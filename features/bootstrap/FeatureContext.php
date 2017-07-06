@@ -130,6 +130,15 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
     /**
+     * @When I print the page contents
+     */
+    public function iPrintThePageContents()
+    {
+        $content = $this->getSession()->getPage()->getContent();
+        print $content;
+    }
+
+    /**
      * @Given I wait :seconds seconds or until I see :text
      */
     public function iWaitSecondsOrUntilISee($seconds, $text)
