@@ -19,7 +19,7 @@ Feature: Update database
   @api
   Scenario: Determine whether a module can be installed and updated with its update_N hooks
     Given I am logged in as a user with the "administrator" role
-    And I have run the drush command 'drush dl ctools-7.x-1.0'
+    And I have run the drush command 'dl ctools-7.x-1.0'
     And I am on "/admin/modules"
     Then I should see "Chaos Tools"
     When I check the box "Chaos Tools"
