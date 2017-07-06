@@ -19,12 +19,8 @@ Feature: Update database
   @api
   Scenario: Determine whether a module can be installed and updated with its update_N hooks
     Given I am logged in as a user with the "administrator" role
-    And I am on "/admin/modules/install"
-    And I enter "https://ftp.drupal.org/files/projects/ctools-7.x-1.0.tar.gz" for "edit-project-url"
-    And I press "Install"
-    And I wait for the batch job to finish
-    Then I should see "Installation was completed successfully."
-    When I follow "Enable newly added modules"
+    And I have run the drush command 'drush dl ctools-7.x-1.0'
+    And I am on "/admin/modules"
     Then I should see "Chaos Tools"
     When I check the box "Chaos Tools"
     And I press "Save Configuration"

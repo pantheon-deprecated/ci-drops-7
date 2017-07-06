@@ -56,58 +56,6 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
     /**
-     * @Given /^I wait for the batch job to finish$/
-     * Wait until the id="updateprogress" element is gone,
-     * or timeout after 3 minutes (180,000 ms).
-     */
-    public function iWaitForTheBatchJobToFinish() {
-      $this->getSession()->wait(180000, 'jQuery("#updateprogress").length === 0');
-    }
-
-    /**
-     * @Given I wait for the progress bar to finish
-     */
-    public function iWaitForTheProgressBarToFinish() {
-      $this->iFollowMetaRefresh();
-    }
-
-    /**
-     * @Given I follow meta refresh
-     *
-     * https://www.drupal.org/node/2011390
-     */
-    public function iFollowMetaRefresh() {
-      if ($url = $this->getRefreshURL()) {
-        print "redirecting to $url\n";
-        $this->getSession()->visit($url);
-        print "here is the new content:\n";
-        $content = $this->getSession()->getPage()->getContent();
-        print "No refresh url found!\n";
-        print $content;
-      }
-      else {
-        $content = $this->getSession()->getPage()->getContent();
-        print "No refresh url found!\n";
-        print $content;
-      }
-    }
-
-    protected function getRefreshURL() {
-      if ($refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"]')) {
-        $content = $refresh->getAttribute('content');
-        $url = str_replace('0; URL=', '', $content);
-        return $url;
-      }
-      // Ugh. If there is no http-equiv refresh, extract the URI from the Javascript.
-      $content = $this->getSession()->getPage()->getContent();
-      if (preg_match('#jQuery\.extend.*"uri":"([^"]*)#', $content, $matches)) {
-        $url = json_decode('"' . $matches[1] . '"');
-        return $url;
-      }
-      return false;
-    }
-
-    /**
      * @Given I have wiped the site
      */
     public function iHaveWipedTheSite()
@@ -164,16 +112,6 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $env = getenv('TERMINUS_ENV');
 
         passthru("terminus --yes env:commit {$site}.{$env} --message='$arg1'");
-    }
-
-    /**
-     * @Given I have exported configuration
-     */
-    public function iHaveExportedConfiguration()
-    {
-        $return = '';
-        $output = array();
-        exec("terminus --yes drush {$site}.{$env} -- config-export -y", $output, $return);
     }
 
     /**
