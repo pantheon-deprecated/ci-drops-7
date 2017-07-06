@@ -56,13 +56,10 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
     /**
-     * @Given I wait for the progress bar to finish for :url
+     * @Given I wait for the progress bar to finish
      */
-    public function iWaitForTheProgressBarToFinish($url) {
-      while ($refresh = $this->getSession()->getPage()->find('css', 'div[id="progress"]')) {
-        print "Waiting for progress bar to finish...\n";
-        $this->getSession()->visit($url);
-      }
+    public function iWaitForTheProgressBarToFinish() {
+      $this->iFollowMetaRefresh();
     }
 
     /**
@@ -71,10 +68,17 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      * https://www.drupal.org/node/2011390
      */
     public function iFollowMetaRefresh() {
+      $followedOne = false;
       while ($refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"]')) {
         $content = $refresh->getAttribute('content');
         $url = str_replace('0; URL=', '', $content);
         $this->getSession()->visit($url);
+        $followedOne = true;
+      }
+      if (!$followedOne) {
+        $content = $this->getSession()->getPage()->getContent();
+        print "No refresh attribute found!\n";
+        print $content;
       }
     }
 
@@ -96,7 +100,21 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $site = getenv('TERMINUS_SITE');
         $env = getenv('TERMINUS_ENV');
-        passthru("terminus --yes drush {$site}.{$env} -- site-install standard --site-name=\"$arg1\" --account-name=admin --yes");
+        $password = getenv('ADMIN_PASSWORD');
+
+        $replacements = [
+          '{site-name}' => $site,
+          '{env}' => $env,
+        ];
+
+        $arg1 = str_replace(array_keys($replacements), array_values($replacements), $arg1);
+
+        $cmd = "terminus --yes drush {$site}.{$env} -- site-install standard --yes --site-name=\"$arg1\" --account-name=admin";
+        if (!empty($password)) {
+          $cmd .= " --account-pass='$password'";
+        }
+
+        passthru($cmd);
     }
 
     /**
