@@ -71,6 +71,10 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
       if ($url = $this->getRefreshURL()) {
         print "redirecting to $url\n";
         $this->getSession()->visit($url);
+        print "here is the new content:\n";
+        $content = $this->getSession()->getPage()->getContent();
+        print "No refresh url found!\n";
+        print $content;
       }
       else {
         $content = $this->getSession()->getPage()->getContent();
