@@ -83,7 +83,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $site = getenv('TERMINUS_SITE');
         $env = getenv('TERMINUS_ENV');
 
-        passthru("terminus --yes site:wipe {$site}.{$env}");
+        passthru("terminus --yes env:wipe {$site}.{$env}");
     }
 
     /**
