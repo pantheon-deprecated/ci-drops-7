@@ -56,6 +56,15 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
     /**
+     * @Given /^I wait for the batch job to finish$/
+     * Wait until the id="updateprogress" element is gone,
+     * or timeout after 3 minutes (180,000 ms).
+     */
+    public function iWaitForTheBatchJobToFinish() {
+      $this->getSession()->wait(180000, 'jQuery("#updateprogress").length === 0');
+    }
+
+    /**
      * @Given I wait for the progress bar to finish
      */
     public function iWaitForTheProgressBarToFinish() {
