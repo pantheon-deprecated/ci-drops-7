@@ -10,7 +10,7 @@ Feature: Installer
 
   Scenario: Profile selection
     Given I am on "/install.php"
-    And I select "pantheon" for "profile"
+    And I enter "pantheon" for "profile"
     And I press "Save and continue"
     Then I should see "English (built-in)"
 
