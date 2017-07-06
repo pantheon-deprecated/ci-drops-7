@@ -56,10 +56,13 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
     /**
-     * @Given I wait for the progress bar to finish
+     * @Given I wait for the progress bar to finish for :url
      */
-    public function iWaitForTheProgressBarToFinish() {
-      $this->iFollowMetaRefresh();
+    public function iWaitForTheProgressBarToFinish($url) {
+      while ($refresh = $this->getSession()->getPage()->find('css', 'div[id="progress"]')) {
+        print "Waiting for progress bar to finish...\n";
+        $this->getSession()->visit($url);
+      }
     }
 
     /**
@@ -68,17 +71,10 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      * https://www.drupal.org/node/2011390
      */
     public function iFollowMetaRefresh() {
-      $followedOne = false;
       while ($refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"]')) {
         $content = $refresh->getAttribute('content');
         $url = str_replace('0; URL=', '', $content);
         $this->getSession()->visit($url);
-        $followedOne = true;
-      }
-      if (!$followedOne) {
-        $content = $this->getSession()->getPage()->getContent();
-        print "No refresh attribute found!\n";
-        print $content;
       }
     }
 

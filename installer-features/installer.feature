@@ -17,7 +17,7 @@ Feature: Installer
   Scenario: Language selection
     Given I am on "/install.php?profile=pantheon"
     And I press "Save and continue"
-    And I wait for the progress bar to finish
+    And I wait for the progress bar to finish for "/install.php?profile=pantheon"
     Then I should see "Site name"
 
   Scenario: Configure site
