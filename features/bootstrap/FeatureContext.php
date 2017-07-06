@@ -103,7 +103,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         exec("terminus  --yes drush {$site}.{$env} -- $arg1", $output, $return);
         $output = implode("\n", $output);
 
-        if (!$return) {
+        if ($return) {
           throw new Exception("Error running Drush command:\n$output");
         }
 
