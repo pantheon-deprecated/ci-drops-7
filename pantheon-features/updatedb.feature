@@ -23,18 +23,12 @@ Feature: Update database
     And I am on "/admin/modules"
     Then I should see "Chaos Tools"
     When I check the box "Chaos Tools"
-    And I press "Save Configuration"
+    And I press "Save configuration"
     Then I should see "The configuration options have been saved."
     When I am on "/admin/modules/update"
     Then I should see "7.x-1.0"
-    When I check the box "edit-projects-ctools"
-    And I press "Download these updates"
-    And I wait for the progress bar to finish
-    Then I should see "Updates downloaded successfully"
-    When I press "Continue"
-    And I wait for the progress bar to finish
-    Then I should see "Update was completed successfully"
-    When I follow "Run database updates"
+    And I have run the drush command 'pm-update ctools'
+    And I am on "/update.php"
     Then I should see "Drupal database update"
     When I press "Continue"
     Then I should see "Increase the length of the ctools_object_cache.obj column"
