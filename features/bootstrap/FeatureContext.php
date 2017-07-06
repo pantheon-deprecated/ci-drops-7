@@ -95,12 +95,12 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      */
     public function iHaveRunTheDrushCommand($arg1)
     {
+        $site = getenv('TERMINUS_SITE');
+        $env = getenv('TERMINUS_ENV');
+
         $return = '';
         $output = array();
         exec("terminus  --yes drush {$site}.{$env} -- $arg1", $output, $return);
-        // echo $return;
-        // print_r($output);
-
     }
 
     /**
