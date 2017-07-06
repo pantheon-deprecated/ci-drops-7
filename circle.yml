@@ -1,0 +1,41 @@
+# This is the circle.yml file used to test the ci-drops-8 project against
+# a current, already released version of Drops-8 on the Pantheon environment.
+# For using this project to test a PR or other branch of a drops-8-derived
+# project, see the circle.yml.dist file.
+
+# https://circleci.com/docs/configuration#machine
+machine:
+  php:
+    # https://circleci.com/docs/environment#php
+    version: 7.0.7
+  environment:
+    TERMINUS_SITE: ci-drops-7
+    TERMINUS_ENV: self-$CIRCLE_BUILD_NUM
+    PATH: $PATH:~/bin
+
+dependencies:
+  cache_directories:
+    - ~/.composer/cache
+  pre:
+    # Set the PHP timezone so that Behat script does not fail.
+    # Using > instead of >> will overwrite the file and disable xdebug.
+    # xdebug makes composer slower.
+    - git config --global user.email "$GIT_EMAIL"
+    - git config --global user.name "Circle CI"
+    - echo "date.timezone = 'US/Central'"  >  /opt/circleci/php/7.0.7/etc/conf.d/xdebug.ini
+  override:
+    - composer global require "hirak/prestissimo:^0.3"
+    - /usr/bin/env COMPOSER_BIN_DIR=$HOME/bin composer --working-dir=$HOME require pantheon-systems/terminus "^1"
+    - terminus --version
+    - /usr/bin/env COMPOSER_BIN_DIR=$HOME/bin composer --working-dir=$HOME/drush require drush/drush:8.*
+    - composer create-project -n -d ~/.terminus/plugins pantheon-systems/terminus-build-tools-plugin:^1
+    - composer install
+  post:
+    - terminus auth login --machine-token=$TERMINUS_TOKEN
+    - terminus build:env:delete -n "$TERMINUS_SITE" '^self-' --keep=2 --yes
+    - terminus env:wake -n "$TERMINUS_SITE.dev"
+    - terminus build:env:create -n "$TERMINUS_SITE.dev" "$TERMINUS_ENV" --yes --clone-content
+test:
+  override:
+    # Note that the behat-drush-endpoint has already been added to the dev environment of the test site.
+    - ./scripts/run-behat
