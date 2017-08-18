@@ -82,7 +82,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
 
         $arg1 = str_replace(array_keys($replacements), array_values($replacements), $arg1);
 
-        $cmd = "terminus --yes drush {$site}.{$env} -- site-install standard --yes --site-name=\"$arg1\" --account-name=admin";
+        $cmd = "terminus --yes drush {$site}.{$env} -- site-install pantheon --yes --site-name=\"$arg1\" --account-name=admin";
         if (!empty($password)) {
           $cmd .= " --account-pass='$password'";
         }
