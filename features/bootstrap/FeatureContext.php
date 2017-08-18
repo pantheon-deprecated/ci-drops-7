@@ -56,6 +56,32 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
     /**
+     * Checks, that option from select with specified id|name|label|value is selected.
+     *
+     * @Then the :arg1 option from :arg2 should be selected
+     */
+    public function theOptionFromShouldBeSelected($option, $select)
+    {
+        $selectField = $this->getSession()->getPage()->findField($select);
+        if (null === $selectField) {
+            throw new ElementNotFoundException($this->getSession(), 'select field', 'id|name|label|value', $select);
+        }
+
+        $optionField = $selectField->find('named', array(
+            'option',
+            $option,
+        ));
+
+        if (null === $optionField) {
+            throw new ElementNotFoundException($this->getSession(), 'select option field', 'id|name|label|value', $option);
+        }
+
+        if (!$optionField->isSelected()) {
+            throw new ExpectationException('Select option field with value|text "'.$option.'" is not selected in the select "'.$select.'"', $this->getSession());
+        }
+    }
+
+    /**
      * @Given I have wiped the site
      */
     public function iHaveWipedTheSite()
